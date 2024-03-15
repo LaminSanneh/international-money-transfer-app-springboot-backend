@@ -9,13 +9,13 @@ import internationalmoneytransferapp.Backend.entities.Transaction;
 import internationalmoneytransferapp.Backend.services.TransactionService;
 
 @RestController
-@RequestMapping(path = "/transactions")
-public class MoneyTransferAppController {
+@RequestMapping(path = "/api/transactions")
+public class TransactionController {
 
 	@Autowired
 	TransactionService transactionService;
 
-	@GetMapping("/all")
+	@GetMapping
 	public Iterable<Transaction> getTransactions() {
 		return transactionService.getAllTransactions();
 	}
