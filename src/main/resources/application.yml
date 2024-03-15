@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: Backend-Gradle
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/international-money-transfer-app
+    username: root
+    password: vicecity
+    driver-class-name: com.mysql.cj.jdbc.Driver # New Driver
+    # driver-class-name: com.mysql.jdbc.Driver # Deprecated driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8989
+#paypal:
+#  client:
+#    id: YOUR_PAYPAL_CLIENT_ID
+#    secret: YOUR_PAYPAL_CLIENT_SECRET
+#  mode: sandbox
