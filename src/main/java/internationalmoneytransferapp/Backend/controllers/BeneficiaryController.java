@@ -26,7 +26,6 @@ public class BeneficiaryController {
         return beneficiaryRepository.save(beneficiary);
     }
 
-    // Get beneficiaries by user ID
     @GetMapping("/{userId}")
     public Iterable<Beneficiary> getBeneficiariesByUserId(@PathVariable Integer userId) {
         return beneficiaryRepository.findByUserId(userId);
