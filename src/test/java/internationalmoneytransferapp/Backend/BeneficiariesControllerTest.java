@@ -26,7 +26,7 @@ import internationalmoneytransferapp.Backend.entities.UserEntity;
 import internationalmoneytransferapp.Backend.repositories.BeneficiaryRepository;
 
 @SpringBootTest
-public class BeneficiariesControllerLevel1TestWebMvc1Test {
+public class BeneficiariesControllerTest {
 
 	@MockBean
 	private BeneficiaryRepository beneficiaryRepository;

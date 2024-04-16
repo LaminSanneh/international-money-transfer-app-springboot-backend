@@ -24,7 +24,7 @@ import internationalmoneytransferapp.Backend.entities.UserEntity;
 import internationalmoneytransferapp.Backend.services.TransactionService;
 
 @SpringBootTest
-public class TransactionControllerLevel1TestWebMvc2Test {
+public class TransactionControllerTest {
 
 	@MockBean
 	private TransactionService transactionService;
