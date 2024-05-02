@@ -18,8 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import internationalmoneytransferapp.Backend.services.CustomUserDetailsService;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -35,48 +37,52 @@ public class SecurityConfig {
     private JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager)
+            throws Exception {
 
         return httpSecurity
-            .csrf((csrf) -> csrf.disable())
-            // .cors((cors) -> cors.disable())
-            .exceptionHandling(
-                (exceptionHandling) -> exceptionHandling.authenticationEntryPoint(authEntryPoint)
-            )
-            .authorizeHttpRequests(
-                (request) ->
-                    request
-                    .requestMatchers("/api/transactions/**")
-                    .hasRole("USER")
-                    .requestMatchers("/api/beneficiaries/**")
-                    .hasRole("USER")
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .anyRequest()
-                    .authenticated()
-                )
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-            .authenticationManager(authenticationManager)
-            // .httpBasic(Customizer.withDefaults())
-            .build();
+                .csrf((csrf) -> csrf.disable())
+                // .cors((cors) -> cors.disable())
+                .exceptionHandling(
+                        (exceptionHandling) -> exceptionHandling.authenticationEntryPoint(authEntryPoint))
+                .authorizeHttpRequests(
+                        (request) -> request
+                                .requestMatchers("/api/transactions/**")
+                                // .permitAll()
+                                .hasRole("USER")
+                                .requestMatchers("/api/beneficiaries/**")
+                                .hasRole("USER")
+                                .requestMatchers("/api/auth/**").permitAll()
+                                .anyRequest()
+                                .authenticated())
+                .logout((logout) -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout"))
+                        .deleteCookies("JSESSIONID").invalidateHttpSession(true).clearAuthentication(true).logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        }))
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .authenticationManager(authenticationManager)
+                // .httpBasic(Customizer.withDefaults())
+                .build();
     }
 
     // @Bean
     // public UserDetailsService users() {
-    //     PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    // PasswordEncoder encoder =
+    // PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    //     UserDetails admin = User.builder()
-    //         .username("admin")
-    //         .password(encoder.encode("password"))
-    //         .roles("ADMIN")
-    //         .build();
+    // UserDetails admin = User.builder()
+    // .username("admin")
+    // .password(encoder.encode("password"))
+    // .roles("ADMIN")
+    // .build();
 
-    //     UserDetails user = User.builder()
-    //         .username("user")
-    //         .password(encoder.encode("password"))
-    //         .roles("USER")
-    //         .build();
+    // UserDetails user = User.builder()
+    // .username("user")
+    // .password(encoder.encode("password"))
+    // .roles("USER")
+    // .build();
 
-    //     return new InMemoryUserDetailsManager(admin, user);
+    // return new InMemoryUserDetailsManager(admin, user);
     // }
 
     public JWTAuthenticationFilter jwtAuthenticationFilter() {
@@ -84,7 +90,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
